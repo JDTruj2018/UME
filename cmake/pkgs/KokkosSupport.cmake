@@ -1,5 +1,5 @@
 
-option(USE_KOKKOS "Enable support for Kokkos code")
+set(USE_KOKKOS True CACHE BOOL "Enable support for Kokkos code")
 
 if(USE_KOKKOS)
 
