@@ -71,6 +71,25 @@ if (UME_SERIAL)
   message(STATUS "Using the Kokkos::Serial backend.")
 endif()
 
+if (UME_SANITIZE)
+  if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    message(FATAL_ERROR "LLVM Sanitizers require an LLVM-based compiler.")
+  endif()
+  set(COMMON_COMPILE_OPTIONS
+    ${COMMON_COMPILE_OPTIONS}
+    "-fno-omit-frame-pointer"
+    "-fno-optimize-sibling-calls"
+    "-fsanitize=address,undefined,integer,nullability"
+    "-fsanitize-recover=address"
+    )
+  set(COMMON_LINK_LIBRARIES
+    ${COMMON_LINK_LIBRARIES}
+    "-fsanitize=address,undefined,integer,nullability"
+    )
+  message(STATUS "Compiling and linking with ASAN and UBSAN.")
+  message(STATUS "  Recommended to have the llvm-symbolizer in PATH.")
+endif()
+
 set_target_properties(Ume PROPERTIES
   COMPILE_DEFINITIONS "${COMMON_COMPILE_DEFINITIONS}"
   COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS}"
